@@ -1,43 +1,31 @@
 {
-  "name": "phosphor-upx-xd",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/jest": "^26.0.15",
-    "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
-  },
+  "name": "helllo_react_jsx",
+  "version": "1.0.0",
+  "main": "main.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "watch": "nodemon -w src -e js,jsx,css -w webpack.config.js -x yarn build",
+    "build": "webpack --mode development"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "license": "none",
+  "private": true,
+  "devDependencies": {
+    "file-loader": "^6.2.0",
+    "nodemon": "^1.18.7",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "css-loader": "^1.0.0",
+    "fuse.js": "^6.4.6",
+    "phosphor-react": "^1.3.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-use": "^17.3.1",
+    "style-loader": "^0.22.0",
+    "yarn": "^1.22.0",
+    "zustand": "^3.6.2"
   }
 }
