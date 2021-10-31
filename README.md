@@ -1,31 +1,47 @@
-# Getting started
+<img src="/meta/phosphor-mark-tight-yellow.png" width="128" align="right" />
 
-This sample demonstrates how to use React to create a plugin for XD. The plugin receives user's inputs in a dialog and places the input(text) in the first artboard.
-[Read the step-by-step guide for this sample](https://adobexdplatform.com/plugin-docs/tutorials/quick-start-react/).
+# Phosphor Icons
 
-## Development
+Phosphor is a flexible icon family for interfaces, diagrams, presentations — whatever, really. Explore all our icons at [phosphoricons.com](https://phosphoricons.com).
 
-1. Install `yarn` if not available
-```
-npm install -g yarn
-```
+## Adobe XD Plugin
 
-2. Install npm packages
-```
-npm install
-```
+Browse, search, and copy into your project all from within Adobe XD! Installation details coming soon!
 
-3. Install yarn packages
-```
-yarn install
-```
+<!-- <img src="/meta/plugin-demo.gif" /> -->
 
-4. Start compliling
-```
-yarn watch
-```
+## Raw Assets
 
-## Usage
+If you'd like to use the assets directly, you can download our [asset kit](https://www.phosphoricons.com/assets/phosphor-icons.zip).
 
-1. Run "Plugins > Create Rectangle"
+- **SVGs** – Individual icon SVGs, in both minified and original formats retaining design-time detail.
+- **Icon Font** – Use the icons as you would text, in print and other applications where full-fledged graphical elements are undesirable.
 
+<!-- ### Source Files
+- **Sketch**
+- **Illustrator**
+- **Figma** -->
+
+## Our Related Projects
+
+- [phosphor-home](https://github.com/phosphor-icons/phosphor-home) ▲ Phosphor homepage and general info
+- [phosphor-react](https://github.com/phosphor-icons/phosphor-react) ▲ Phosphor icon component library for React
+- [phosphor-vue](https://github.com/phosphor-icons/phosphor-vue) ▲ Phosphor icon component library for Vue
+- [phosphor-icons](https://github.com/phosphor-icons/phosphor-icons) ▲ Phosphor icons for Vanilla JS
+- [phosphor-flutter](https://github.com/phosphor-icons/phosphor-flutter) ▲ Phosphor IconData library for Flutter
+- [phosphor-webcomponents](https://github.com/phosphor-icons/phosphor-webcomponents) ▲ Phosphor icons as Web Components
+- [phosphor-figma](https://github.com/phosphor-icons/phosphor-figma) ▲ Phosphor icons Figma plugin
+- [phosphor-sketch](https://github.com/phosphor-icons/phosphor-sketch) ▲ Phosphor icons Sketch plugin
+
+## Community Projects
+
+- [phosphor-react-native](https://github.com/duongdev/phosphor-react-native) ▲ Phosphor icon component library for React Native
+- [phosphor-svelte](https://github.com/haruaki07/phosphor-svelte) ▲ Phosphor icons for Svelte apps
+- [phosphor-r](https://github.com/dreamRs/phosphoricons) ▲ Phosphor icon wrapper for R documents and applications
+- [blade-phosphor-icons](https://github.com/codeat3/blade-phosphor-icons) ▲ Phosphor icons in your Laravel Blade views
+
+If you've made a port of Phosphor and you want to see it here, just open a PR [here](https://github.com/phosphor-icons/phosphor-home)!
+
+## License
+
+MIT © [Phosphor Icons](https://github.com/phosphor-icons)
