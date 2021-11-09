@@ -1,14 +1,14 @@
 import React, { useRef, useCallback, useEffect } from "react";
+import btoa from "abab/lib/btoa";
 import { IconContext, SmileyXEyes } from "phosphor-react";
 
 import { useIconSearch, useIconWeight } from "../../state";
 
-const { localFileSystem: fs, formats } = require("uxp").storage;
+// const { localFileSystem: fs, formats } = require("uxp").storage;
 
 const IconGrid = () => {
   const { weight } = useIconWeight();
   const { query, results } = useIconSearch();
-  const dragStartRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     window.addEventListener("dragover", (e) => {
@@ -31,22 +31,17 @@ const IconGrid = () => {
 
   const handleDragStart = useCallback((e) => {
     console.log(e);
-    const { offsetX, offsetY } = e.nativeEvent;
 
-    const dataUrl = `data:image/svg+xml,${encodeURIComponent(
+    // const svg = new XMLSerializer().serializeToString(
+    //   e.target.querySelector("svg")
+    // );
+    const dataUrl = `data:image/svg+xml;base64,${btoa(
+      // svg
       e.currentTarget.innerHTML
     )}`;
-    console.log({ dataUrl });
-
-    // e.nativeEvent.dataTransfer.effectAllowed = "copy";
-    // e.nativeEvent.dataTransfer.dropEffect = "copy";
-    e.nativeEvent.dataTransfer.setData("text/uri-list", dataUrl);
-
-    // e.dataTransfer.effectAllowed = "copy";
-    // e.dataTransfer.dropEffect = "copy";
     e.dataTransfer.setData("text/uri-list", dataUrl);
 
-    // dragStartRef.current = { x: offsetX, y: offsetY };
+    console.log({ raw: e.currentTarget.innerHTML, dataUrl });
 
     // const tempFolder = await fs.getTemporaryFolder();
     // const imageFile = await tempFolder.createFile(`temp${e.timeStamp}.svg`, {
@@ -54,19 +49,10 @@ const IconGrid = () => {
     // });
     // await imageFile.write(e.currentTarget.innerHTML, { format: formats.utf8 });
     // console.log({ imageFile });
-
-    // // // e.nativeEvent.dataTransfer.effectAllowed = "copy";
-    // // e.nativeEvent.dataTransfer.dropEffect = "copy";
-    // e.nativeEvent.dataTransfer.setData("text/uri-list", imageFile.nativePath);
-    // // console.log({ imageFile });
-
-    // // // e.dataTransfer.effectAllowed = "copy";
-    // // e.dataTransfer.dropEffect = "copy";
     // e.dataTransfer.setData("text/uri-list", imageFile.nativePath);
   }, []);
 
   const handleDragEnd = useCallback((e, name) => {
-    console.log(e);
     const { clientX, clientY, view } = e.nativeEvent;
     if (!!view && view.length === 0) return;
 
@@ -78,7 +64,6 @@ const IconGrid = () => {
         width: window.outerWidth,
         height: window.outerHeight,
       },
-      offset: dragStartRef.current,
     };
 
     console.info({ pluginMessage: { type: "drop", payload } }, "*");
@@ -99,8 +84,8 @@ const IconGrid = () => {
       <IconContext.Provider value={{ weight, size: 24 }}>
         {results.map(({ Icon }) => (
           <div
-            className="icon-wrapper"
             draggable
+            className="icon-wrapper"
             onDragStart={handleDragStart}
             onDragEnd={(e) => handleDragEnd(e, Icon.displayName)}
             key={Icon.displayName}
