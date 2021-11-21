@@ -10,8 +10,8 @@ function create() {
   return panel;
 }
 
-function renderApp() {
-  ReactDOM.render(<App />, panel);
+function renderApp(selection) {
+  ReactDOM.render(<App selection={selection} />, panel);
 }
 
 function show(event) {
@@ -20,8 +20,7 @@ function show(event) {
 }
 
 function update(selection) {
-  console.log(selection);
-  renderApp();
+  renderApp(selection);
 }
 
 export const panels = {

@@ -1,14 +1,27 @@
-import React, { useRef, useCallback, useEffect } from "react";
+import React, {
+  useRef,
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import btoa from "abab/lib/btoa";
 import { IconContext, SmileyXEyes } from "phosphor-react";
+import { pathThatSvg } from "path-that-svg";
 
-import { useIconSearch, useIconWeight } from "../../state";
+import { useIconSearch, useIconSelections, useIconWeight } from "../../state";
+import IconActions from "./IconActions.jsx";
 
-// const { localFileSystem: fs, formats } = require("uxp").storage;
+const application = require("application");
+const { localFileSystem: fs } = require("uxp").storage;
 
-const IconGrid = () => {
+const IconGrid = ({ selection }) => {
   const { weight } = useIconWeight();
   const { query, results } = useIconSearch();
+  const { pending, addPending, removePending, clearPending } =
+    useIconSelections();
+  const pendingNames = useMemo(() => pending.map((i) => i.name), [pending]);
+  // const [filePath, setFilePath] = useState(null);
 
   useEffect(() => {
     window.addEventListener("dragover", (e) => {
@@ -17,56 +30,67 @@ const IconGrid = () => {
     });
   }, []);
 
-  const handleCopyToWorkspace = async (event, name) => {
-    // const PS = require("photoshop");
-    // const layer = await PS.app.activeDocument.createLayer({ name });
-    const sceneGraph = require("scenegraph");
+  const handlePrepareFile = async (e, name) => {
+    const svgString = e.currentTarget.innerHTML;
 
-    const svg = event.currentTarget.outerHTML;
-    console.info(
-      { pluginMessage: { type: "insert", payload: { name, svg } } },
-      "*"
-    );
+    if (pendingNames.includes(name)) {
+      removePending(name);
+    } else {
+      try {
+        const tempFolder = await fs.getTemporaryFolder();
+        const imageFile = await tempFolder.createFile(`${name}.svg`, {
+          overwrite: true,
+        });
+        await imageFile.write(svgString);
+        addPending(name, imageFile.nativePath);
+      } catch (e) {
+        console.error(e);
+      }
+    }
   };
 
-  const handleDragStart = useCallback((e) => {
-    console.log(e);
+  const handleDragStart = useCallback(
+    (e) => {
+      console.log(pending.map((p) => p.url).join("\n"));
 
-    // const svg = new XMLSerializer().serializeToString(
-    //   e.target.querySelector("svg")
-    // );
-    const dataUrl = `data:image/svg+xml;base64,${btoa(
-      // svg
-      e.currentTarget.innerHTML
-    )}`;
-    e.dataTransfer.setData("text/uri-list", dataUrl);
-
-    console.log({ raw: e.currentTarget.innerHTML, dataUrl });
-
-    // const tempFolder = await fs.getTemporaryFolder();
-    // const imageFile = await tempFolder.createFile(`temp${e.timeStamp}.svg`, {
-    //   overwrite: true,
-    // });
-    // await imageFile.write(e.currentTarget.innerHTML, { format: formats.utf8 });
-    // console.log({ imageFile });
-    // e.dataTransfer.setData("text/uri-list", imageFile.nativePath);
-  }, []);
+      if (!pending.length) return;
+      e.dataTransfer.setData(
+        "text/uri-list",
+        pending.map((p) => p.url).join("\n")
+      );
+    },
+    [pending]
+  );
 
   const handleDragEnd = useCallback((e, name) => {
-    const { clientX, clientY, view } = e.nativeEvent;
-    if (!!view && view.length === 0) return;
+    clearPending();
+  }, []);
 
-    const payload = {
-      name,
-      svg: e.currentTarget.innerHTML,
-      dropPosition: { clientX, clientY },
-      windowSize: {
-        width: window.outerWidth,
-        height: window.outerHeight,
-      },
-    };
+  const handleInsertToArtboard = useCallback((e, name) => {
+    const svgString = e.currentTarget.innerHTML;
+    console.log({ svgString });
 
-    console.info({ pluginMessage: { type: "drop", payload } }, "*");
+    application.editDocument(
+      { editLabel: `Importing ${name}` },
+      async (selection) => {
+        try {
+          // const data = await pathThatSvg(svgString);
+          // console.log({ data });
+
+          const tempFolder = await fs.getTemporaryFolder();
+          const imageFile = await tempFolder.createFile(`${name}.svg`, {
+            overwrite: true,
+          });
+          await imageFile.write(svgString);
+
+          console.log({ imageFile, selection });
+          selection.insertionParent.addChild();
+          console.log("imported file");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    );
   }, []);
 
   if (!results.length)
@@ -81,25 +105,32 @@ const IconGrid = () => {
 
   return (
     <div className="grid">
+      {!!pending.length && (
+        <IconActions
+          isOpen={!!pending.length}
+          numSeleceted={pending.length}
+          onInsert={undefined}
+          onClear={clearPending}
+        />
+      )}
       <IconContext.Provider value={{ weight, size: 24 }}>
-        {results.map(({ Icon }) => (
-          <div
-            draggable
-            className="icon-wrapper"
-            onDragStart={handleDragStart}
-            onDragEnd={(e) => handleDragEnd(e, Icon.displayName)}
-            key={Icon.displayName}
-            title={Icon.displayName}
-          >
-            <Icon
-              className="icon"
+        {results.map(({ Icon }) => {
+          const isPending = pendingNames.includes(Icon.displayName);
+          return (
+            <div
+              draggable={isPending}
+              className={`icon-wrapper ${isPending ? "pending" : ""}`}
+              onClick={(e) => handlePrepareFile(e, Icon.displayName)}
+              onDragStart={handleDragStart}
+              onDragEnd={(e) => handleDragEnd(e, Icon.displayName)}
+              // onMouseEnter={(e) => handlePrepareFile(e, Icon.displayName)}
               key={Icon.displayName}
-              onClick={(event) =>
-                handleCopyToWorkspace(event, Icon.displayName)
-              }
-            />
-          </div>
-        ))}
+              title={Icon.displayName}
+            >
+              <Icon className="icon" key={Icon.displayName} />
+            </div>
+          );
+        })}
       </IconContext.Provider>
     </div>
   );

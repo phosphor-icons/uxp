@@ -5,12 +5,12 @@ import Toolbar from "./components/Toolbar";
 import IconGrid from "./components/IconGrid";
 import Footer from "./components/Footer";
 
-const Panel = () => {
+const Panel = ({ selection }) => {
   return (
     <div className="app">
       <Toolbar />
       <Suspense fallback={<div>Loading...</div>}>
-        <IconGrid />
+        <IconGrid selection={selection} />
       </Suspense>
       <Footer />
     </div>

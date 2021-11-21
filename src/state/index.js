@@ -31,3 +31,20 @@ export const useIconSearch = create((set) => ({
     });
   },
 }));
+
+export const useIconSelections = create((set) => ({
+  pending: [],
+  addPending: (name, url) => {
+    if (!name || !url) return;
+    set(({ pending }) => ({ pending: [...pending, { name, url }] }));
+  },
+  removePending: (name) => {
+    if (!name) return;
+    set(({ pending }) => ({
+      pending: pending.filter((icon) => icon.name !== name),
+    }));
+  },
+  clearPending: () => {
+    set({ pending: [] });
+  },
+}));
